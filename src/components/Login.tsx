@@ -27,7 +27,7 @@ export default function Login() {
         </div>
 
         <h1 className="text-3xl font-bold text-center text-white mb-2 tracking-tight">
-          Aurora <span className="text-purple-400">Coach</span>
+          Cohere <span className="text-purple-400">Coach</span>
         </h1>
         <p className="text-center text-slate-400 mb-8 font-medium">
           Clinical-grade insights. Empathetic guidance.

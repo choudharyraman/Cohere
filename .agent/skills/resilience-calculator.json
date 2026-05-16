@@ -1,7 +1,6 @@
 {
   "name": "resilience-calculator",
-  "description": "Calculates a Resilience Score between 1 and 100 based on trailing HRV, RHR, and sleep.",
-  "inputs": ["trailingHRV", "restingHeartRate", "sleepDuration"],
-  "logic": "score = 100 - penalties(sleep < 7, rhr > 65, hrv < 50)",
-  "output": "Resilience Score (1-100)"
+  "description": "Calculates the user's weekly Resilience Score (1-100) based on trailing HRV, resting heart rate (RHR), and sleep duration.",
+  "instructions": "1. Fetch the last 7 days of HRV, RHR, and Sleep from FHIR observations.\n2. Normalize HRV against a 30-day baseline.\n3. Compute Sleep Debt = (8 - AvgSleep) * 7.\n4. Output Resilience Score using formula: (HRV_Ratio * 0.5) + (RHR_Ratio * 0.2) + (Sleep_Ratio * 0.3) scaled 1-100.",
+  "constraints": "Must return an integer between 1 and 100. Assume low resilience if data sparsity > 30%."
 }

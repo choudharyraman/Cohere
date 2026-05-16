@@ -1,0 +1,6 @@
+{
+  "name": "rppg-extractor",
+  "description": "Analyzes real-time or recorded face video frames from the browser camera to detect subtle skin color variations, calculating heart rate and heart rate variability (HRV) using remote photoplethysmography (rPPG).",
+  "instructions": "Extract biometric data from video frames.",
+  "constraints": "Do not process frames containing partial facial occlusion or low lighting conditions. Return a confidence score alongside output metrics."
+}

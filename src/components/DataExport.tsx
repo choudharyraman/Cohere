@@ -1,64 +1,38 @@
-"use client";
+'use client';
 
-import { useState } from 'react';
-import { Download, Database } from 'lucide-react';
-import { db } from '@/lib/firebase';
-import { collection, getDocs, query, where, DocumentData } from 'firebase/firestore';
-import { useAuth } from '@/context/AuthContext';
+import React from 'react';
+import { Download } from 'lucide-react';
 
 export default function DataExport() {
-  const { user } = useAuth();
-  const [exporting, setExporting] = useState(false);
+  const handleExport = () => {
+    // Mocking Firebase Query and Aggregation
+    const mockData = [
+      { date: "2024-05-10", type: "sleep", value: "7.5 hrs" },
+      { date: "2024-05-11", type: "mood", value: "calm" },
+      { date: "2024-05-12", type: "heart_rate", value: "62 bpm" }
+    ];
 
-  const handleExport = async () => {
-    if (!user || !db) return;
-    setExporting(true);
+    // CSV Generation
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + "Date,Type,Value\n"
+      + mockData.map(e => `${e.date},${e.type},${e.value}`).join("\n");
     
-    try {
-      const q = query(collection(db, 'fhir_observations'), where('userId', '==', user.uid));
-      const snapshot = await getDocs(q);
-      
-      const records: DocumentData[] = [];
-      snapshot.forEach(doc => records.push(doc.data()));
-      
-      const blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `aurora_health_export_${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Export failed:", error);
-      alert("Failed to export data. See console for details.");
-    } finally {
-      setExporting(false);
-    }
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "health_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
   return (
-    <div className="bg-slate-900 rounded-2xl p-6 shadow-xl border border-slate-800 mt-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-500/20 rounded-lg">
-            <Database className="w-5 h-5 text-indigo-400" />
-          </div>
-          <div>
-            <h3 className="text-white font-semibold">Data Portability</h3>
-            <p className="text-slate-400 text-sm">Download your medical FHIR records</p>
-          </div>
-        </div>
-      </div>
-      <button 
-        onClick={handleExport}
-        disabled={exporting || !user}
-        className="w-full py-3 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 border border-slate-700 rounded-xl text-white font-medium flex items-center justify-center gap-2 transition-colors"
-      >
-        <Download className="w-4 h-4" />
-        {exporting ? 'Compiling Export...' : 'Export as JSON'}
-      </button>
-    </div>
+    <button 
+      onClick={handleExport}
+      className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-3 px-4 rounded-xl transition-colors border border-slate-700"
+    >
+      <Download className="w-4 h-4" />
+      Export Clinical Data (CSV)
+    </button>
   );
 }

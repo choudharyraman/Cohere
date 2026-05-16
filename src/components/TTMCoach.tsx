@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { AlertCircle, Activity, Heart, ArrowRight, LogOut } from 'lucide-react';
+import { AlertCircle, Activity, Heart, ArrowRight, User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 type TTMStage = 'Precontemplation' | 'Contemplation' | 'Preparation' | 'Action' | 'Maintenance';
@@ -13,12 +13,22 @@ import DataExport from './DataExport';
 import Vitals from './Vitals';
 import Alerts from './Alerts';
 
+// Next-Gen Features
+import CamerarPPG from './CamerarPPG';
+import GaitAnalysis from './GaitAnalysis';
+import LabDiagnosticsStore from './LabDiagnosticsStore';
+import SelfCarePet from './SelfCarePet';
+import VoiceFirstAid from './VoiceFirstAid';
+import LiveRouteShare from './LiveRouteShare';
+
+import UserProfile from './UserProfile';
+
 export default function TTMCoach() {
   // Simulated State for TTM Stage
   const [stage] = useState<TTMStage>('Preparation');
   const [crisisTriggered, setCrisisTriggered] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'Coach' | 'Vitals' | 'Alerts'>('Coach');
+  const [activeTab, setActiveTab] = useState<'Coach' | 'Vitals' | 'Alerts' | 'Profile'>('Coach');
   const { user, logout } = useAuth();
 
   const stageContent = {
@@ -99,13 +109,17 @@ export default function TTMCoach() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
               <Activity className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-xl font-black text-white tracking-tight">Aurora</h1>
+            <h1 className="text-xl font-black text-white tracking-tight">Cohere</h1>
           </div>
           <button 
-            onClick={logout}
-            className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/20 transition-colors"
+            onClick={() => setActiveTab('Profile')}
+            className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/20 transition-colors overflow-hidden"
           >
-            <LogOut className="w-4 h-4" />
+            {user?.photoURL ? (
+              <img src={user.photoURL} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-4 h-4" />
+            )}
           </button>
         </header>
 
@@ -200,6 +214,7 @@ export default function TTMCoach() {
 
               {/* Extensibility Widgets inline for Coach Tab */}
               <div className="space-y-6 pt-4 border-t border-slate-800/50">
+                <SelfCarePet />
                 <DailyChallenges />
                 <SecurityLock />
                 <DataExport />
@@ -208,14 +223,25 @@ export default function TTMCoach() {
           )}
 
           {activeTab === 'Vitals' && (
-             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                <Vitals />
+               <CamerarPPG />
+               <GaitAnalysis />
+               <LabDiagnosticsStore />
              </motion.div>
           )}
 
           {activeTab === 'Alerts' && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <VoiceFirstAid />
               <Alerts />
+              <LiveRouteShare />
+            </motion.div>
+          )}
+
+          {activeTab === 'Profile' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <UserProfile />
             </motion.div>
           )}
         </main>
@@ -243,6 +269,13 @@ export default function TTMCoach() {
             >
               <AlertCircle className="w-6 h-6" />
               <span className="text-[10px] font-bold tracking-wider">ALERTS</span>
+            </button>
+            <button 
+              onClick={() => setActiveTab('Profile')}
+              className={`flex flex-col items-center gap-1 ${activeTab === 'Profile' ? 'text-slate-200' : 'text-slate-500'}`}
+            >
+              <User className="w-6 h-6" />
+              <span className="text-[10px] font-bold tracking-wider">PROFILE</span>
             </button>
           </div>
         </nav>

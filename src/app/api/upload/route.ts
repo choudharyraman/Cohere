@@ -1,38 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { parseVisionDocument } from '@/services/visionParser';
+import { NextResponse } from 'next/server';
+import { visionParser } from '@/services/visionParser';
 
-// 5MB limit
-const MAX_FILE_SIZE = 5 * 1024 * 1024; 
-
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const formData = await req.formData();
-    const file = formData.get('file') as File | null;
-    const instructions = formData.get('instructions') as string || 'Extract key health metrics and text.';
-
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    const file = formData.get('file') as File;
+    if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    
+    // 5MB limit
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Payload too large, limit is 5MB' }, { status: 413 });
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'File size exceeds 5MB limit' }, { status: 400 });
-    }
-
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // Convert file to buffer for Gemini 3
+    const buffer = Buffer.from(await file.arrayBuffer());
     
-    // In a real production scenario, we'd stream this directly to Firebase Storage.
-    // For now, we process it in-memory using Vertex AI Vision parser.
-    
-    const parsedData = await parseVisionDocument(buffer, file.type, instructions);
+    // Process with Vertex AI SDK (visionParser)
+    const extractionResult = await visionParser(buffer, file.type);
 
     return NextResponse.json({
       success: true,
-      data: parsedData,
+      data: extractionResult,
     });
   } catch (error) {
-    console.error("Upload API Error:", error);
-    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    console.error("Upload Error:", error);
+    return NextResponse.json({ error: 'Upload failed', details: String(error) }, { status: 500 });
   }
 }

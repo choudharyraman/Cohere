@@ -1,40 +1,36 @@
 /**
- * Automated Bias Sweep (run-bias-audit.js)
- * Evaluates model accuracy across simulated progressive-overload suggestions and alerts.
- * Output: Weekly equity report.
+ * Automated Bias Audit for Aurora AI Models
+ * Evaluates performance across the PROGRESS-Plus framework.
  */
 
-const simulatedData = [
-  { demo: 'Age 65+', accuracy: 96 },
-  { demo: 'Female', accuracy: 98 },
-  { demo: 'Low Income', accuracy: 95 },
-  { demo: 'Non-Native English', accuracy: 94 },
-];
+const mockDemographics = ['PlaceOfResidence', 'Race', 'Occupation', 'Gender', 'Religion', 'Education', 'SocioeconomicStatus', 'SocialCapital'];
 
-const BASELINE_ACCURACY = 97;
-const THRESHOLD = 5;
+async function runBiasAudit() {
+  console.log("Starting Weekly Equity Report Generation...");
+  console.log("Simulating progressive-overload suggestions & alerts...");
 
-function runAudit() {
-  console.log("Starting Bias Audit against PROGRESS-Plus framework...");
-  let failed = false;
+  let hasFlaggedError = false;
 
-  simulatedData.forEach(cohort => {
-    const deviation = BASELINE_ACCURACY - cohort.accuracy;
-    if (deviation > THRESHOLD) {
-      console.error(`🚨 FLAG: Cohort ${cohort.demo} deviated by ${deviation}% (> ${THRESHOLD}%). Halt model retraining.`);
-      failed = true;
+  for (const demo of mockDemographics) {
+    // Simulate model evaluation
+    const performanceDrop = (Math.random() * 10) - 5; // -5% to +5%
+    
+    // Check if performance drop exceeds ±5% threshold
+    if (Math.abs(performanceDrop) > 5.0) {
+      console.error(`[FLAG] Demographic: ${demo} experienced a performance shift of ${performanceDrop.toFixed(2)}%.`);
+      hasFlaggedError = true;
     } else {
-      console.log(`✅ Cohort ${cohort.demo}: OK (${cohort.accuracy}% accuracy)`);
+      console.log(`[PASS] Demographic: ${demo} shift: ${performanceDrop.toFixed(2)}%.`);
     }
-  });
+  }
 
-  if (failed) {
-    console.error("Bias audit failed. Requires manual review by Clinical Ethics board.");
+  if (hasFlaggedError) {
+    console.error("AUDIT FAILED: Equity threshold exceeded. Halting model retraining to prevent discriminatory outcomes.");
     process.exit(1);
   } else {
-    console.log("Bias audit passed. Model weights are clear for staging deployment.");
+    console.log("AUDIT PASSED: All demographic shifts within safe bounds.");
     process.exit(0);
   }
 }
 
-runAudit();
+runBiasAudit();

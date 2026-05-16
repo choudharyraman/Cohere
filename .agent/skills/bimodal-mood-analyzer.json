@@ -1,0 +1,6 @@
+{
+  "name": "bimodal-mood-analyzer",
+  "description": "Synchronizes and processes bimodal inputs of user voice recordings and transcribed text to track indicators of cognitive load, stress, and depressive patterns.",
+  "instructions": "Analyze voice and text to extract emotional markers.",
+  "constraints": "Strictly separate acoustic analysis from user identity. Do not store raw voice biometric prints; only store aggregated emotional vector trends."
+}
