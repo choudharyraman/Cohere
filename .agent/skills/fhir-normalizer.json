@@ -1,0 +1,11 @@
+{
+  "name": "fhir-normalizer",
+  "description": "Transforms raw, heterogeneous wearable sensor data payloads (heart rate, HRV, step count) into compliant HL7 FHIR R4 Observation resources.",
+  "instructions": [
+    "1. Extract sensor metrics from incoming JSON payload.",
+    "2. Map metrics to standard FHIR R4 Observation structures.",
+    "3. Add proper coding systems (e.g., LOINC) for observations.",
+    "4. Ensure user reference is present and valid."
+  ],
+  "constraints": "Do not alter established FHIR resource keys. Reject payloads missing a valid user reference."
+}

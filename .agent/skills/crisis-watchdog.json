@@ -1,0 +1,11 @@
+{
+  "name": "crisis-watchdog",
+  "description": "Scans inbound natural language user inputs or speech-to-text transcripts for acute physiological or psychological distress signals.",
+  "instructions": [
+    "1. Parse the incoming text using semantic search and strict substring matching against high-risk categories (cardiac symptoms, acute depression, eating disorders).",
+    "2. If a match is detected, immediately return a boolean flag 'trigger_escalation: true'.",
+    "3. Construct a standard escalation payload containing the user's historical clinical context and current coordinates.",
+    "4. Prepare a compassionate, immediate disclosure message instructing the user to contact emergency services, while locking the conversational interface."
+  ],
+  "constraints": "This check must execute in under 100ms. Never attempt to counsel a user experiencing active medical emergencies."
+}
