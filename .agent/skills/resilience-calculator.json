@@ -1,0 +1,7 @@
+{
+  "name": "resilience-calculator",
+  "description": "Calculates a Resilience Score between 1 and 100 based on trailing HRV, RHR, and sleep.",
+  "inputs": ["trailingHRV", "restingHeartRate", "sleepDuration"],
+  "logic": "score = 100 - penalties(sleep < 7, rhr > 65, hrv < 50)",
+  "output": "Resilience Score (1-100)"
+}
