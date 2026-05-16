@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 }
 
 // Mock normalization function referencing the fhir-normalizer skill
-function normalizeToFHIR(payload: any, userId: string) {
+function normalizeToFHIR(payload: Record<string, unknown>, userId: string) {
   if (!payload || !userId) return null;
 
   return {
